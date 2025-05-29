@@ -8,13 +8,19 @@ import com.itextpdf.text.DocumentException;
 import jakarta.validation.Valid;
 import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/employees")
@@ -90,6 +96,9 @@ public class EmployeeController {
 		if (employeeDTO.getProfilePhoto() != null) {
 			employeeDTO.setProfilePhoto(null);
 		}
+		if (employeeDTO.getRole() == null) {
+			throw new IllegalArgumentException("Role is required");
+		}
 		EmployeeDTO savedEmployee = employeeService.saveEmployee(employeeDTO);
 		return ResponseEntity.ok(savedEmployee);
 	}
@@ -152,4 +161,26 @@ public class EmployeeController {
 		DocumentDTO documentDTO = documentService.uploadDocument(employeeId, file, documentType);
 		return ResponseEntity.ok(documentDTO);
 	}
+	
+	@GetMapping("/test-roles")
+	public ResponseEntity<Map<String, Object>> testRoles(@AuthenticationPrincipal Jwt jwt) {
+	    // Get all claims
+	    Map<String, Object> claims = jwt.getClaims();
+	    
+	    // Get authorities
+	    Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext()
+	            .getAuthentication()
+	            .getAuthorities();
+	    
+	    // Create response
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("claims", claims);
+	    response.put("authorities", authorities.stream()
+	            .map(GrantedAuthority::getAuthority)
+	            .collect(Collectors.toList()));
+	    
+	    return ResponseEntity.ok(response);
+	}
+
+
 }
