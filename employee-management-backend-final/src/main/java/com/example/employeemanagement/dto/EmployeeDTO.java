@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example.employeemanagement.model.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
  
 @Getter
@@ -74,6 +75,12 @@ public class EmployeeDTO {
     
     @NotBlank(message = "Permanent zip code is required")
     private String permanentZip;
+    
+
+    @NotNull(message = "Role is required")
+    private Role role;
+
+    
    
     private List<EducationDTO> educationList = new ArrayList<>();
     private List<CertificationDTO> certifications = new ArrayList<>();
@@ -87,6 +94,12 @@ public class EmployeeDTO {
     
     private ProfilePhotoDTO profilePhoto;
     private Boolean removeProfilePhoto;
+    
+    private Long projectId;
+    private String projectName;
+    private Long teamId;
+    private String teamName;
+
     
     // Add this method to help with photo handling
    
