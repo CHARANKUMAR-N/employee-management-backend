@@ -45,6 +45,18 @@ public class Employee {
 	private String permanentCity;
 	private String permanentState;
 	private String permanentZip;
+	
+	@Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.MEMBER; 
+
+	@ManyToOne
+	@JoinColumn(name = "project_id")
+	private Project project;
+
+	@ManyToOne
+	@JoinColumn(name = "team_id")
+	private Team team;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Education> educationList = new ArrayList<>();
