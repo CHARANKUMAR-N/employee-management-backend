@@ -1,12 +1,14 @@
 package com.example.employeemanagement.dto;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeamDTO {
     private Long id;
     private String name;
@@ -17,7 +19,5 @@ public class TeamDTO {
     private Long teamManagerId;
     private String teamManagerName;
     private List<EmployeeDTO> members;
-    
-    // Constructor for convenience
-    public TeamDTO() {}
+
 }
