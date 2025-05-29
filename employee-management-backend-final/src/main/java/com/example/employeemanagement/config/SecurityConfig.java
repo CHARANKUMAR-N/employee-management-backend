@@ -75,7 +75,7 @@ public class SecurityConfig {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:8081","http://10.100.124.64:8081","https://employee-management-frontend-tr0k.onrender.com");
+		configuration.setAllowedOrigins(List.of("http://localhost:8081","http://10.100.124.64:8081","https://employee-management-frontend-tr0k.onrender.com"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
