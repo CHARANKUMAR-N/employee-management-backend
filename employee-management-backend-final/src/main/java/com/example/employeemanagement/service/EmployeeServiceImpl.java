@@ -56,6 +56,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		// Ensure profile photo is not set during initial creation
 		employeeDTO.setProfilePhoto(null);
 
+		// Set default role if not provided
+		if (employeeDTO.getRole() == null) {
+			throw new IllegalArgumentException("Role is required");
+		}
+
 		Employee employee = convertToNewEntity(employeeDTO);
 		Employee savedEmployee = employeeRepository.save(employee);
 		return convertToDTO(savedEmployee);
@@ -324,6 +329,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setCertifications(new ArrayList<>());
 		employee.setSkills(new ArrayList<>());
 		employee.setDocuments(new ArrayList<>());
+		employee.setRole(employeeDTO.getRole());
 
 		if (employeeDTO.getEducationList() != null) {
 			employeeDTO.getEducationList().forEach(eduDto -> {
@@ -376,6 +382,41 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 
 		return employee;
+	}
+
+	@Override
+	public List<EmployeeDTO> getEmployeesByProject(Long projectId) {
+		if (projectId == null) {
+			return Collections.emptyList();
+		}
+		return employeeRepository.findByProjectId(projectId).stream().map(this::convertToDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeDTO> getEmployeesByProjectManager(Long projectManagerId) {
+		if (projectManagerId == null) {
+			return Collections.emptyList();
+		}
+		return employeeRepository.findByTeam_ProjectManager_EmployeeId(projectManagerId).stream()
+				.map(this::convertToDTO).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeDTO> getEmployeesByTeamManager(Long teamManagerId) {
+		if (teamManagerId == null) {
+			return Collections.emptyList();
+		}
+		return employeeRepository.findByTeam_TeamManager_EmployeeId(teamManagerId).stream().map(this::convertToDTO)
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EmployeeDTO> getEmployeesByRole(Role role) {
+		if (role == null) {
+			return Collections.emptyList();
+		}
+		return employeeRepository.findByRole(role).stream().map(this::convertToDTO).collect(Collectors.toList());
 	}
 
 	private EmployeeDTO convertToDTO(Employee employee) {
