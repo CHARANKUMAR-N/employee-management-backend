@@ -38,6 +38,8 @@ public class SecurityConfig {
 		http.csrf(csrf -> csrf.disable()).cors(cors -> cors.configurationSource(corsConfigurationSource()))
 				.authorizeHttpRequests(auth -> auth.requestMatchers("/api/public/**").permitAll()
 						.requestMatchers("/api/employees/*/profile-photo").authenticated()
+						.requestMatchers("/api/projects/**").authenticated()
+		                .requestMatchers("/api/teams/**").authenticated()
 						.requestMatchers("/api/employees/**").authenticated().anyRequest().authenticated())
 				.oauth2ResourceServer(oauth2 -> oauth2
 						.jwt(jwt -> jwt.decoder(jwtDecoder()).jwtAuthenticationConverter(jwtAuthenticationConverter())))
@@ -59,19 +61,21 @@ public class SecurityConfig {
 
 	@Bean
 	public JwtAuthenticationConverter jwtAuthenticationConverter() {
-		JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-		grantedAuthoritiesConverter.setAuthoritiesClaimName("https://api.employeemanagement.com/roles");
-		grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-
-		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-		return jwtAuthenticationConverter;
+	    JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+	    grantedAuthoritiesConverter.setAuthoritiesClaimName("https://api.employeemanagement.com/roles");
+	    grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+	    
+	    JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+	    jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
+	    return jwtAuthenticationConverter;
 	}
+
+
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(List.of("http://localhost:8081","http://10.100.124.64:8081","https://employee-management-frontend-tr0k.onrender.com"));
+		configuration.setAllowedOrigins(List.of("http://localhost:8081","http://10.100.124.64:8081"));
 		configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 		configuration.setAllowedHeaders(List.of("*"));
 		configuration.setExposedHeaders(List.of("Authorization", "Content-Type"));
