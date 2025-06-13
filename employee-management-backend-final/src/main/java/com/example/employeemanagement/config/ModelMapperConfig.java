@@ -49,6 +49,7 @@ public class ModelMapperConfig {
                 mapper.skip(Employee::setSkills);
                 mapper.skip(Employee::setProject);
                 mapper.skip(Employee::setTeam);
+                mapper.skip(Employee::setLeaves);
             });
 
         return modelMapper;
