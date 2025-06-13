@@ -13,152 +13,164 @@ import java.util.*;
 @AllArgsConstructor
 public class Employee {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "employee_id")
-	private Long employeeId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "employee_id")
+    private Long employeeId;
 
-	private String firstName;
-	private String lastName;
-	private String gender;
-	private LocalDate dob;
+    private String firstName;
+    private String lastName;
+    private String gender;
+    private LocalDate dob;
 
-	@Column(unique = true)
-	private String email;
+    @Column(unique = true)
+    private String email;
 
-	@Column(unique = true)
-	private String personalEmail;
+    @Column(unique = true)
+    private String personalEmail;
 
-	private String fatherName;
+    private String fatherName;
 
-	@Column(unique = true)
-	private String mobile;
+    @Column(unique = true)
+    private String mobile;
 
-	// Present Address
-	private String presentStreet;
-	private String presentCity;
-	private String presentState;
-	private String presentZip;
+    // Present Address
+    private String presentStreet;
+    private String presentCity;
+    private String presentState;
+    private String presentZip;
 
-	// Permanent Address
-	private String permanentStreet;
-	private String permanentCity;
-	private String permanentState;
-	private String permanentZip;
-	
-	@Enumerated(EnumType.STRING)
+    // Permanent Address
+    private String permanentStreet;
+    private String permanentCity;
+    private String permanentState;
+    private String permanentZip;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Role role = Role.MEMBER; 
+    private Role role = Role.MEMBER;
 
-	@ManyToOne
-	@JoinColumn(name = "project_id")
-	private Project project;
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
-	@ManyToOne
-	@JoinColumn(name = "team_id")
-	private Team team;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "team_id")
+    private Team team;
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Education> educationList = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> educationList = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Certification> certifications = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Certification> certifications = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Skill> skills = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Skill> skills = new ArrayList<>();
 
-	@OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	private ProfilePhoto profilePhoto;
+    @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private ProfilePhoto profilePhoto;
 
-	@OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
-	private List<Document> documents = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = false)
+    private List<Document> documents = new ArrayList<>();
 
-	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Experience> experiences = new ArrayList<>();
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Experience> experiences = new ArrayList<>();
 
-	// Helper methods for managing relationships
-	public void addEducation(Education education) {
-		educationList.add(education);
-		education.setEmployee(this);
-	}
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Leave> leaves = new ArrayList<>();
 
-	public void removeEducation(Education education) {
-		educationList.remove(education);
-		education.setEmployee(null);
-	}
+    // Helper methods for managing relationships
+    public void addEducation(Education education) {
+        educationList.add(education);
+        education.setEmployee(this);
+    }
 
-	public void addCertification(Certification certification) {
-		certifications.add(certification);
-		certification.setEmployee(this);
-	}
+    public void removeEducation(Education education) {
+        educationList.remove(education);
+        education.setEmployee(null);
+    }
 
-	public void removeCertification(Certification certification) {
-		certifications.remove(certification);
-		certification.setEmployee(null);
-	}
+    public void addCertification(Certification certification) {
+        certifications.add(certification);
+        certification.setEmployee(this);
+    }
 
-	public void addSkill(Skill skill) {
-		skills.add(skill);
-		skill.setEmployee(this);
-	}
+    public void removeCertification(Certification certification) {
+        certifications.remove(certification);
+        certification.setEmployee(null);
+    }
 
-	public void removeSkill(Skill skill) {
-		skills.remove(skill);
-		skill.setEmployee(null);
-	}
+    public void addSkill(Skill skill) {
+        skills.add(skill);
+        skill.setEmployee(this);
+    }
 
-	public void setProfilePhoto(ProfilePhoto profilePhoto) {
-		if (profilePhoto == null) {
-			if (this.profilePhoto != null) {
-				this.profilePhoto.setEmployee(null);
-			}
-		} else {
-			profilePhoto.setEmployee(this);
-		}
-		this.profilePhoto = profilePhoto;
-	}
+    public void removeSkill(Skill skill) {
+        skills.remove(skill);
+        skill.setEmployee(null);
+    }
 
-	// Helper method for managing documents
-	public void addDocument(Document document) {
-		documents.add(document);
-		document.setEmployee(this);
-	}
+    public void setProfilePhoto(ProfilePhoto profilePhoto) {
+        if (profilePhoto == null) {
+            if (this.profilePhoto != null) {
+                this.profilePhoto.setEmployee(null);
+            }
+        } else {
+            profilePhoto.setEmployee(this);
+        }
+        this.profilePhoto = profilePhoto;
+    }
 
-	public void removeDocument(Document document) {
-		documents.remove(document);
-		document.setEmployee(null);
-	}
+    public void addDocument(Document document) {
+        documents.add(document);
+        document.setEmployee(this);
+    }
 
-	public void setDocuments(List<Document> documents) {
-		if (this.documents == null) {
-			this.documents = documents;
-		} else {
-			this.documents.clear();
-			if (documents != null) {
-				documents.forEach(this::addDocument);
-			}
-		}
-	}
+    public void removeDocument(Document document) {
+        documents.remove(document);
+        document.setEmployee(null);
+    }
 
-	public void addExperience(Experience experience) {
-		experiences.add(experience);
-		experience.setEmployee(this);
-	}
+    public void setDocuments(List<Document> documents) {
+        if (this.documents == null) {
+            this.documents = documents;
+        } else {
+            this.documents.clear();
+            if (documents != null) {
+                documents.forEach(this::addDocument);
+            }
+        }
+    }
 
-	public void removeExperience(Experience experience) {
-		experiences.remove(experience);
-		experience.setEmployee(null);
-	}
+    public void addExperience(Experience experience) {
+        experiences.add(experience);
+        experience.setEmployee(this);
+    }
 
-	public void setExperiences(List<Experience> experiences) {
-		if (this.experiences == null) {
-			this.experiences = new ArrayList<>();
-		}
-		this.experiences.clear();
-		if (experiences != null) {
-			for (Experience exp : experiences) {
-				this.addExperience(exp); // ensures exp.setEmployee(this)
-			}
-		}
-	}
+    public void removeExperience(Experience experience) {
+        experiences.remove(experience);
+        experience.setEmployee(null);
+    }
+
+    public void setExperiences(List<Experience> experiences) {
+        if (this.experiences == null) {
+            this.experiences = new ArrayList<>();
+        }
+        this.experiences.clear();
+        if (experiences != null) {
+            for (Experience exp : experiences) {
+                this.addExperience(exp);
+            }
+        }
+    }
+
+    public void addLeave(Leave leave) {
+        leaves.add(leave);
+        leave.setEmployee(this);
+    }
+
+    public void removeLeave(Leave leave) {
+        leaves.remove(leave);
+        leave.setEmployee(null);
+    }
 }
