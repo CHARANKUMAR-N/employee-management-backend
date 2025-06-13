@@ -240,7 +240,7 @@ public class PdfService {
 		addTableRow(table, "Personal Email:", employee.getPersonalEmail());
 		addTableRow(table, "Father's Name:", employee.getFatherName());
 		addTableRow(table, "Mobile:", employee.getMobile());
-
+		addTableRow(table, "Role:", employee.getRole() != null ? employee.getRole().name() : "N/A");
 		document.add(table);
 	}
 
