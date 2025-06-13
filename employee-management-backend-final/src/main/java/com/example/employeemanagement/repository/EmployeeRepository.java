@@ -32,4 +32,3 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     List<Employee> findByProject_SeniorProjectManager_EmployeeId(Long employeeId);
 }
-
