@@ -161,26 +161,30 @@ public class EmployeeController {
 		DocumentDTO documentDTO = documentService.uploadDocument(employeeId, file, documentType);
 		return ResponseEntity.ok(documentDTO);
 	}
-	
+
 	@GetMapping("/test-roles")
 	public ResponseEntity<Map<String, Object>> testRoles(@AuthenticationPrincipal Jwt jwt) {
-	    // Get all claims
-	    Map<String, Object> claims = jwt.getClaims();
-	    
-	    // Get authorities
-	    Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext()
-	            .getAuthentication()
-	            .getAuthorities();
-	    
-	    // Create response
-	    Map<String, Object> response = new HashMap<>();
-	    response.put("claims", claims);
-	    response.put("authorities", authorities.stream()
-	            .map(GrantedAuthority::getAuthority)
-	            .collect(Collectors.toList()));
-	    
-	    return ResponseEntity.ok(response);
+		// Get all claims
+		Map<String, Object> claims = jwt.getClaims();
+
+		// Get authorities
+		Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication()
+				.getAuthorities();
+
+		// Create response
+		Map<String, Object> response = new HashMap<>();
+		response.put("claims", claims);
+		response.put("authorities",
+				authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()));
+
+		return ResponseEntity.ok(response);
 	}
 
+	@GetMapping("/email/{email}")
+	public ResponseEntity<EmployeeDTO> getEmployeeByEmail(@PathVariable String email,
+			@AuthenticationPrincipal Jwt jwt) {
+		EmployeeDTO employee = employeeService.getEmployeeByEmail(email);
+		return ResponseEntity.ok(employee);
+	}
 
 }
