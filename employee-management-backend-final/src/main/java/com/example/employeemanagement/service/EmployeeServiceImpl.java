@@ -468,27 +468,26 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDTO getEmployeeByEmail(String email) {
-		// First try to find by email
-		logger.debug("Fetching employee with email: {}", email);
-		Optional<Employee> employee = employeeRepository.findByEmail(email);
+	    logger.debug("Fetching employee with email: {}", email);
+	    
+	    // First try to find by email
+	    Optional<Employee> employee = employeeRepository.findByEmail(email);
 
-		// If not found, try personal email
-		if (employee.isEmpty()) {
-			employee = employeeRepository.findByPersonalEmail(email);
-		}
+	    // If not found, try personal email
+	    if (employee.isEmpty()) {
+	        employee = employeeRepository.findByPersonalEmail(email);
+	    }
 
-		// If still not found, try to extract email from Auth0 ID if it's in that format
-		if (employee.isEmpty() && email.startsWith("auth0|")) {
-			// Try to find by email without the Auth0 prefix
-			String cleanEmail = email.substring(email.indexOf("|") + 1);
-			employee = employeeRepository.findByEmail(cleanEmail);
-			if (employee.isEmpty()) {
-				employee = employeeRepository.findByPersonalEmail(cleanEmail);
-			}
-		}
+	    // If still not found, try to extract email from Auth0 ID if it's in that format
+	    if (employee.isEmpty() && email.startsWith("auth0|")) {
+	        String cleanEmail = email.substring(email.indexOf("|") + 1);
+	        employee = employeeRepository.findByEmail(cleanEmail);
+	        if (employee.isEmpty()) {
+	            employee = employeeRepository.findByPersonalEmail(cleanEmail);
+	        }
+	    }
 
-		return employee.map(this::convertToDTO)
-				.orElseThrow(() -> new ResourceNotFoundException("Employee not found with identifier: " + email));
+	    return employee.map(this::convertToDTO)
+	            .orElseThrow(() -> new ResourceNotFoundException("Employee not found with identifier: " + email));
 	}
-
 }
